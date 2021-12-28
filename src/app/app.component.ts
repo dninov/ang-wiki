@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { WikipediaService } from './wikipedia.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'wiki';
+  pages = [];
+
+  constructor(
+    private wikipedia: WikipediaService,
+  ){}
+  onTerm(e:string) {
+    this.wikipedia.search(e).subscribe((response: any) =>{
+      this.pages = response.query.search;
+    })
+  }
 }
