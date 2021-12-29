@@ -1,7 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { observable, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { pluck } from 'rxjs/operators';
 
+
+interface WikiRes {
+  query: {
+    search: {
+      title: string;
+      snippet: string;
+      pageid: number;
+    }[]
+  }
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -10,8 +21,8 @@ export class WikipediaService {
   constructor(
     private http: HttpClient) { }
 
-  public search(term: string) : any {
-   return this.http.get('https://en.wikipedia.org/w/api.php' , {
+  public search(term: string)  {
+   return this.http.get<WikiRes>('https://en.wikipedia.org/w/api.php' , {
      params: {
        action:'query',
        format: 'json',
@@ -20,6 +31,8 @@ export class WikipediaService {
        srsearch: term,
        origin: '*'
      }
-   });
+   }).pipe(
+     pluck('query', 'search')
+   )
   }
 }
